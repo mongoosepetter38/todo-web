@@ -53,6 +53,15 @@ def complete(task_id):
         db.session.commit()
     return redirect("/")
 
+@app.route("/uncomplete/<int:task_id>")
+@login_required
+def uncomplete(task_id):
+    task = Task.query.get(task_id)
+    if task and task.user_id == current_user.id:
+        task.done = False
+        db.session.commit()
+    return redirect("/")
+
 @app.route("/delete/<int:task_id>")
 @login_required
 def delete(task_id):
