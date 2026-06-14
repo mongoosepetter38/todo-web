@@ -19,7 +19,7 @@
       border-radius: 16px;
       padding: 36px;
       width: 100%;
-      max-width: 700px;
+      max-width: 760px;
       margin: 40px auto;
     }
 
@@ -67,6 +67,32 @@
 
     .logout:hover {
       background: #3a3a4d;
+    }
+
+    .stats {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .stat-box {
+      flex: 1;
+      background: #0f0f18;
+      border: 0.5px solid #2e2e3e;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .stat-box strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+
+    .stat-box span {
+      color: #666;
+      font-size: 13px;
     }
 
     form {
@@ -124,6 +150,7 @@
     .task-text {
       font-size: 15px;
       color: #f0f0f0;
+      word-break: break-word;
     }
 
     .done {
@@ -172,6 +199,10 @@
         align-items: flex-start;
       }
 
+      .stats {
+        flex-direction: column;
+      }
+
       form {
         flex-direction: column;
       }
@@ -207,6 +238,21 @@
         </div>
       </div>
       <a href="/logout" class="logout">Logout</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <strong>{{ tasks|length }}</strong>
+        <span>Total</span>
+      </div>
+      <div class="stat-box">
+        <strong>{{ tasks|selectattr('done')|list|length }}</strong>
+        <span>Done</span>
+      </div>
+      <div class="stat-box">
+        <strong>{{ tasks|rejectattr('done')|list|length }}</strong>
+        <span>Left</span>
+      </div>
     </div>
 
     <form action="/add" method="POST">
