@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -27,6 +27,10 @@ class Task(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
+
+@app.route("/service-worker.js")
+def service_worker():
+    return send_from_directory("static", "service-worker.js")
 
 @app.route("/")
 @login_required
