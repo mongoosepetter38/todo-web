@@ -31,30 +31,17 @@
       gap: 16px;
     }
 
-    .logo-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
+    .logo-row { display: flex; align-items: center; gap: 14px; }
 
     .logo {
       width: 40px;
       height: 40px;
       border-radius: 10px;
       background: #6c63ff;
-      flex-shrink: 0;
     }
 
-    h1 {
-      font-size: 24px;
-      font-weight: 500;
-      margin-bottom: 4px;
-    }
-
-    .subtitle {
-      color: #666;
-      font-size: 14px;
-    }
+    h1 { font-size: 24px; font-weight: 500; margin-bottom: 4px; }
+    .subtitle { color: #666; font-size: 14px; }
 
     .logout {
       text-decoration: none;
@@ -63,10 +50,6 @@
       padding: 10px 14px;
       border-radius: 10px;
       font-size: 14px;
-    }
-
-    .logout:hover {
-      background: #3a3a4d;
     }
 
     .stats {
@@ -84,16 +67,8 @@
       text-align: center;
     }
 
-    .stat-box strong {
-      display: block;
-      font-size: 22px;
-      margin-bottom: 4px;
-    }
-
-    .stat-box span {
-      color: #666;
-      font-size: 13px;
-    }
+    .stat-box strong { display: block; font-size: 22px; margin-bottom: 4px; }
+    .stat-box span { color: #666; font-size: 13px; }
 
     form {
       display: flex;
@@ -112,13 +87,7 @@
       outline: none;
     }
 
-    input[type="text"]:focus {
-      border-color: #6c63ff;
-    }
-
-    input::placeholder {
-      color: #555;
-    }
+    input[type="text"]:focus { border-color: #6c63ff; }
 
     button {
       background: #6c63ff;
@@ -131,8 +100,12 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #5a52e0;
+    .section-title {
+      color: #aaa;
+      font-size: 14px;
+      margin: 24px 0 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
     }
 
     .task {
@@ -172,13 +145,8 @@
       color: white;
     }
 
-    .complete-btn {
-      background: #16803c;
-    }
-
-    .delete-btn {
-      background: #e24b4a;
-    }
+    .complete-btn { background: #16803c; }
+    .delete-btn { background: #e24b4a; }
 
     .empty {
       color: #666;
@@ -190,40 +158,13 @@
     }
 
     @media (max-width: 600px) {
-      .card {
-        padding: 24px;
-        margin: 20px auto;
-      }
-
-      .top-bar {
-        align-items: flex-start;
-      }
-
-      .stats {
-        flex-direction: column;
-      }
-
-      form {
-        flex-direction: column;
-      }
-
-      button {
-        width: 100%;
-      }
-
-      .task {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .actions {
-        width: 100%;
-      }
-
-      .actions a {
-        flex: 1;
-        text-align: center;
-      }
+      .card { padding: 24px; margin: 20px auto; }
+      .stats { flex-direction: column; }
+      form { flex-direction: column; }
+      button { width: 100%; }
+      .task { flex-direction: column; align-items: flex-start; }
+      .actions { width: 100%; }
+      .actions a { flex: 1; text-align: center; }
     }
   </style>
 </head>
@@ -260,20 +201,37 @@
       <button type="submit">Add</button>
     </form>
 
-    {% if tasks %}
-      {% for task in tasks %}
+    <h2 class="section-title">Active Tasks</h2>
+
+    {% set active_tasks = tasks|rejectattr('done')|list %}
+    {% if active_tasks %}
+      {% for task in active_tasks %}
         <div class="task">
-          <span class="task-text {{ 'done' if task.done else '' }}">{{ task.task }}</span>
+          <span class="task-text">{{ task.task }}</span>
           <div class="actions">
-            {% if not task.done %}
-              <a href="/complete/{{ task.id }}" class="complete-btn">Done</a>
-            {% endif %}
+            <a href="/complete/{{ task.id }}" class="complete-btn">Done</a>
             <a href="/delete/{{ task.id }}" class="delete-btn" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a>
           </div>
         </div>
       {% endfor %}
     {% else %}
-      <p class="empty">No tasks yet — add one above.</p>
+      <p class="empty">No active tasks.</p>
+    {% endif %}
+
+    <h2 class="section-title">Completed Tasks</h2>
+
+    {% set completed_tasks = tasks|selectattr('done')|list %}
+    {% if completed_tasks %}
+      {% for task in completed_tasks %}
+        <div class="task">
+          <span class="task-text done">{{ task.task }}</span>
+          <div class="actions">
+            <a href="/delete/{{ task.id }}" class="delete-btn" onclick="return confirm('Are you sure you want to delete this task?');">Delete</a>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="empty">No completed tasks yet.</p>
     {% endif %}
   </div>
 </body>
