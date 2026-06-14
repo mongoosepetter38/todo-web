@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -12,7 +12,6 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
-# Database models
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(150), unique=True, nullable=False)
@@ -29,7 +28,6 @@ class Task(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
-# Routes
 @app.route("/")
 @login_required
 def home():
@@ -62,6 +60,15 @@ def delete(task_id):
     if task and task.user_id == current_user.id:
         db.session.delete(task)
         db.session.commit()
+    return redirect("/")
+
+@app.route("/clear_completed")
+@login_required
+def clear_completed():
+    completed_tasks = Task.query.filter_by(user_id=current_user.id, done=True).all()
+    for task in completed_tasks:
+        db.session.delete(task)
+    db.session.commit()
     return redirect("/")
 
 @app.route("/signup", methods=["GET", "POST"])

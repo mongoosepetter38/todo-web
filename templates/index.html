@@ -100,12 +100,28 @@
       cursor: pointer;
     }
 
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 24px 0 10px;
+      gap: 12px;
+    }
+
     .section-title {
       color: #aaa;
       font-size: 14px;
-      margin: 24px 0 10px;
       text-transform: uppercase;
       letter-spacing: 0.06em;
+    }
+
+    .clear-btn {
+      text-decoration: none;
+      color: white;
+      background: #e24b4a;
+      padding: 7px 10px;
+      border-radius: 8px;
+      font-size: 13px;
     }
 
     .task {
@@ -201,7 +217,9 @@
       <button type="submit">Add</button>
     </form>
 
-    <h2 class="section-title">Active Tasks</h2>
+    <div class="section-header">
+      <h2 class="section-title">Active Tasks</h2>
+    </div>
 
     {% set active_tasks = tasks|rejectattr('done')|list %}
     {% if active_tasks %}
@@ -218,9 +236,15 @@
       <p class="empty">No active tasks.</p>
     {% endif %}
 
-    <h2 class="section-title">Completed Tasks</h2>
-
     {% set completed_tasks = tasks|selectattr('done')|list %}
+
+    <div class="section-header">
+      <h2 class="section-title">Completed Tasks</h2>
+      {% if completed_tasks %}
+        <a href="/clear_completed" class="clear-btn" onclick="return confirm('Delete all completed tasks?');">Clear Completed</a>
+      {% endif %}
+    </div>
+
     {% if completed_tasks %}
       {% for task in completed_tasks %}
         <div class="task">
